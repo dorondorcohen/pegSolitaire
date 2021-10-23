@@ -70,7 +70,7 @@ const MOVES = Object.freeze({
           retryBoardNumber,
           emptyPinsInPreviousMoved: this.getTotalEmptyFields(this.copyOfBoard),
       })
-
+       
       switch(moveType) {
         case MOVES.LEFT:
           this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
@@ -79,15 +79,69 @@ const MOVES = Object.freeze({
         break;
         
         case MOVES.BOTTOM:
-          this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
-          this.copyOfBoard[y + 1] = this.copyOfBoard[y + 1].replaceAt(x, EMPTY_CAHR);
-          this.copyOfBoard[y + 2] = this.copyOfBoard[y + 2].replaceAt(x, PIN_CAHR);
+          switch(y) {
+            case 0:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 1] = this.copyOfBoard[y + 1].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 2] = this.copyOfBoard[y + 2].replaceAt(x + 2, PIN_CAHR);
+            break;
+
+            case 1:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 1] = this.copyOfBoard[y + 1].replaceAt(x + 2, EMPTY_CAHR);
+              this.copyOfBoard[y + 2] = this.copyOfBoard[y + 2].replaceAt(x + 2, PIN_CAHR);
+            break;
+
+            case 3:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 1] = this.copyOfBoard[y + 1].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 2] = this.copyOfBoard[y + 2].replaceAt(x - 2, PIN_CAHR);
+            break;
+
+            case 4:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 1] = this.copyOfBoard[y + 1].replaceAt(x - 2, EMPTY_CAHR);
+              this.copyOfBoard[y + 2] = this.copyOfBoard[y + 2].replaceAt(x - 2, PIN_CAHR);
+            break;
+
+            default:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 1] = this.copyOfBoard[y + 1].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y + 2] = this.copyOfBoard[y + 2].replaceAt(x, PIN_CAHR);
+          }
         break;
   
         case MOVES.UP:
-          this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
-          this.copyOfBoard[y - 1] = this.copyOfBoard[y - 1].replaceAt(x, EMPTY_CAHR);
-          this.copyOfBoard[y - 2] = this.copyOfBoard[y - 2].replaceAt(x, PIN_CAHR);
+          switch(y) {
+            case 2:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y - 1] = this.copyOfBoard[y - 1].replaceAt(x - 2, EMPTY_CAHR);
+              this.copyOfBoard[y - 2] = this.copyOfBoard[y - 2].replaceAt(x - 2, PIN_CAHR);
+            break;
+
+            case 3:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y - 1] = this.copyOfBoard[y - 1].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y - 2] = this.copyOfBoard[y - 2].replaceAt(x - 2, PIN_CAHR);
+            break;
+
+            case 5:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y - 1] = this.copyOfBoard[y - 1].replaceAt(x + 2, EMPTY_CAHR);
+              this.copyOfBoard[y - 2] = this.copyOfBoard[y - 2].replaceAt(x + 2, PIN_CAHR);
+            break;
+
+            case 6:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y - 1] = this.copyOfBoard[y - 1].replaceAt(x, EMPTY_CAHR);
+              this.copyOfBoard[y - 2] = this.copyOfBoard[y - 2].replaceAt(x + 2, PIN_CAHR);
+            break;
+
+            default:
+              this.copyOfBoard[y] = this.copyOfBoard[y].replaceAt(x, EMPTY_CAHR);
+            this.copyOfBoard[y - 1] = this.copyOfBoard[y - 1].replaceAt(x, EMPTY_CAHR);
+            this.copyOfBoard[y - 2] = this.copyOfBoard[y - 2].replaceAt(x, PIN_CAHR);
+          }
         break;
   
         case MOVES.RIGHT:
@@ -99,6 +153,7 @@ const MOVES = Object.freeze({
     }
   
     pushMoveToMemory(x, y, movetype, retryBoardNumber, isDone = false) {
+      console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
         let index = this.calcIndexInMemory(x, y, retryBoardNumber);
         if(!this.memoryMoves[index]) {
             this.memoryMoves[index] = {
@@ -129,26 +184,14 @@ const MOVES = Object.freeze({
         const srcRow = this.src[y];
         let xLength = srcRow.length;
         let isMoved = false
-        
-        if(isMoved) {
-            y = y - 1;
-            break;  
-        }
 
         for(x = 0; x < xLength; x++) {
             if(this.copyOfBoard[y][x] == EMPTY_CAHR) {
                 continue;
             }
 
-            // if(x == 0 && [0, 1, 5 ,6].includes(y)) {
-            //     x += 2
-            //     xLength += 2
-            // }
-
             const availableMoves = this.getPinMoves(x, y, this.countBoardRetries)
-            // console.log('availableMoves:', availableMoves)
-            // console.log('x:', x)
-            // console.log('y:', y)
+
             if(availableMoves[MOVES.LEFT] && !this.isMoveInExistsMemory(x, y, MOVES.LEFT, this.countBoardRetries)) {
               this.updateCopyOfBoard(x, y, MOVES.LEFT, this.countBoardRetries)
               this.move(x, y, MOVES.LEFT)
@@ -166,13 +209,13 @@ const MOVES = Object.freeze({
             }
   
             if(availableMoves[MOVES.UP] && !this.isMoveInExistsMemory(x, y, MOVES.UP, this.countBoardRetries)) {
-                console.log('here up...')
-                console.log('x:', x)
-                console.log('y:', y)
-                console.log('countBoardRetries:', this.countBoardRetries)
+                // console.log('here up...')
+                // console.log('x:', x)
+                // console.log('y:', y)
+                // console.log('countBoardRetries:', this.countBoardRetries)
                 if(y == 5 & x == 1  ) { // && !Object.keys(this.gameMoveStack).length
-                    console.log('y == 5 and x == 1')
-                    console.log('gameMoveStack:', this.gameMoveStack)
+                    // console.log('y == 5 and x == 1')
+                    // console.log('gameMoveStack length:', this.gameMoveStack.length)
                     // return;
                 }
               this.updateCopyOfBoard(x, y, MOVES.UP, this.countBoardRetries)
@@ -194,6 +237,10 @@ const MOVES = Object.freeze({
                 break;  
             }
         }
+
+        if(isMoved) {
+          break;  
+        }
       }
   
       const TotalEmptyFieldsOfCopyBoard = this.getTotalEmptyFields(this.copyOfBoard);
@@ -201,16 +248,15 @@ const MOVES = Object.freeze({
     //   console.log('1:', `${TotalEmptyFieldsOfCopyBoard} === ${this.emptyPinsInPreviousMoved}`)
       console.log('1:', `${TotalEmptyFieldsOfCopyBoard} === ${this.totalEmptyFieldsInDst}`)
     //   console.log('!this.isNewBoardEqualToDstBoard(this.copyOfBoard, this.dst)', !this.isNewBoardEqualToDstBoard(this.copyOfBoard, this.dst))
-    //   console.log(this.copyOfBoard)
+      console.log(this.copyOfBoard)
       if(
           TotalEmptyFieldsOfCopyBoard === this.emptyPinsInPreviousMoved 
-          || (!this.isNewBoardEqualToDstBoard(this.copyOfBoard, this.dst) && TotalEmptyFieldsOfCopyBoard === this.totalEmptyFieldsInDst)
+          || (!this.isNewBoardEqualToDstBoard(Array.from(this.copyOfBoard), Array.from(this.dst)) && TotalEmptyFieldsOfCopyBoard === this.totalEmptyFieldsInDst)
         ) {
         // setTimeout(() => {
-            // console.log('this.gameMoveStack:', this.gameMoveStack)
+            console.log('this.gameMoveStack:', this.gameMoveStack)
             // console.log('this.memoryMoves:', this.memoryMoves )
           const lastMove = this.gameMoveStack.pop();
-        //   console.log('lastMove:', lastMove)
           this.countBoardRetries = lastMove.retryBoardNumber
           this.emptyPinsInPreviousMoved = lastMove.emptyPinsInPreviousMoved;
           this.pushMoveToMemory(x, y, lastMoveType, this.countBoardRetries); // , emptyPinsInPreviousMoved
@@ -238,19 +284,16 @@ const MOVES = Object.freeze({
         console.log(this.moves[this.countGameRetries])
       } else {
         console.log('Failed...')
-        console.log(this.moves[this.countGameRetries])
+        // console.log(this.moves[this.countGameRetries])
+        console.log(this.gameMoveStack)
       }
     }
-
-    goToPreviousMove() {
-
-    }
   
-    resetGame() {
-      this.copyOfBoard = Array.from(this.src);
-      this.countGameRetries++
-      this.countBoardRetries = 0;
-    }
+    // resetGame() {
+    //   this.copyOfBoard = Array.from(this.src);
+    //   this.countGameRetries++
+    //   this.countBoardRetries = 0;
+    // }
   
     isNewBoardEqualToDstBoard(newBoard, dstBoard) {
       let isEqual = true;
@@ -284,19 +327,30 @@ const MOVES = Object.freeze({
       }
   
       if(
-        this.isValidBounds(x, y, MOVES.BOTTOM) &&
-          !this.isTherePin(x, y + PIN_MOVE_COUNT) 
+        this.isValidBounds(x, y, MOVES.BOTTOM) 
+          // !this.isTherePin(x, y + PIN_MOVE_COUNT) 
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y + 1][x] == EMPTY_CAHR)
         ) {
-        availableMoves[MOVES.BOTTOM] = true;
+          if([0, 1].includes(y) && this.isTherePin(x + 2, y + PIN_MOVE_COUNT)) {
+            availableMoves[MOVES.BOTTOM] = true;
+          }
+
+          if([3, 4].includes(y) && this.isTherePin(x - 2, y + PIN_MOVE_COUNT)) {
+            availableMoves[MOVES.BOTTOM] = true;
+          }
       }
       
       if(
-        this.isValidBounds(x, y, MOVES.UP) && 
-          !this.isTherePin(x, y - PIN_MOVE_COUNT) 
+        this.isValidBounds(x, y, MOVES.UP) 
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y - 1][x] == EMPTY_CAHR)
         ) {
-        availableMoves[MOVES.UP] = true;
+          if([2, 3].includes(y) && this.isTherePin(x - 2, y - PIN_MOVE_COUNT)) {
+            availableMoves[MOVES.UP] = true;
+          }
+
+          if([5, 6].includes(y) && this.isTherePin(x + 2, y - PIN_MOVE_COUNT)) {
+            availableMoves[MOVES.UP] = true;
+          }
       }
       
       if(
