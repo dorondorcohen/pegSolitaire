@@ -272,9 +272,10 @@ const MOVES = Object.freeze({
           const lastMove = this.gameMoveStack.pop();
           // console.log(`lastMove:`, lastMove)
           // console.log(`gameMoveStack:`, this.gameMoveStack.length)
-          // if(lastMove) {
-            
-          // }
+          if(!lastMove) {
+            console.error('There no more moves...')
+            return
+          }
           this.countBoardRetries = lastMove.retryBoardNumber
           this.emptyPinsInPreviousMoved = lastMove.emptyPinsInPreviousMoved;
           // this.pushMoveToMemory(x, y, lastMoveType, this.countBoardRetries); // , emptyPinsInPreviousMoved
@@ -496,16 +497,24 @@ const MOVES = Object.freeze({
   const game = new Game();
   try {
     game.init(
-      [' OOO ', ' OOO ', 'O.O.OOO', 'OOO..OO', '..O.OOO', ' O.O ', ' OOO '],
-      // [
-      //    ' OOO ',
-      //    ' OOO ', 
-      //   'OOOOOOO', 
-      //   'OOOOOOO', 
-      //   'OOOO..O', 
-      //    ' O.O ', 
-      //    ' OOO ']
-         // UP, LEFT  
+      // [' OOO ', ' OOO ', 'O.O.OOO', 'OOO..OO', '..O.OOO', ' O.O ', ' OOO '],
+      [
+         ' OOO ',
+         ' OOO ', 
+        'OOOOOOO', 
+        'OOO.OOO', 
+        'O..OOOO', 
+         ' O.O ', 
+         ' O.O ']
+        //  [
+        //   ' OOO ',
+        //   ' OOO ', 
+        //  'OOOOOOO', 
+        //  'OOO.OOO', 
+        //  'O...OOO', 
+        //   ' OOO ', 
+        //   ' OOO ']
+        //  up left bottom right bottom
       // [' OOO ', ' OOO ', 'OOOOOOO', 'OOO.OOO', 'OOOOOOO', ' OOO ', ' OOO '] 
     )
   } catch(e) {
