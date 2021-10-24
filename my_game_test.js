@@ -184,6 +184,7 @@ const MOVES = Object.freeze({
       let x;
       let lastMoveType;
       let availableMoves;
+      console.log('this.copyOfBoard:', Array.from(this.copyOfBoard))
       for(y = 0; y < this.src.length; y++) {
         const srcRow = this.src[y];
         let xLength = srcRow.length;
@@ -217,11 +218,11 @@ const MOVES = Object.freeze({
                 // console.log('x:', x)
                 // console.log('y:', y)
                 // console.log('countBoardRetries:', this.countBoardRetries)
-                if(y == 5 & x == 1  ) { // && !Object.keys(this.gameMoveStack).length
-                    // console.log('y == 5 and x == 1')
-                    // console.log('gameMoveStack length:', this.gameMoveStack.length)
-                    // return;
-                }
+                // if(y == 2 & x == 3  ) { // && !Object.keys(this.gameMoveStack).length
+                //     console.log('y == 2 and x == 3')
+                //     console.log('copyofboard:', this.copyOfBoard)
+                //     // return;
+                // }
               this.updateCopyOfBoard(x, y, MOVES.UP, this.countBoardRetries)
               this.move(x, y, MOVES.UP)
               isMoved = true;
@@ -249,12 +250,14 @@ const MOVES = Object.freeze({
   
       const TotalEmptyFieldsOfCopyBoard = this.getTotalEmptyFields(this.copyOfBoard);
       
-      // console.log('1:', `${TotalEmptyFieldsOfCopyBoard} === ${this.emptyPinsInPreviousMoved}`)
+      console.log('1:', `${TotalEmptyFieldsOfCopyBoard} === ${this.emptyPinsInPreviousMoved}`)
       // console.log('this.memoryMoves:', this.memoryMoves )
       // console.log('Object.values(availableMoves).filter(bool => bool):', Object.values(availableMoves).filter(bool => bool))
       // console.log('1:', `${TotalEmptyFieldsOfCopyBoard} === ${this.totalEmptyFieldsInDst}`)
-    //   console.log('!this.isNewBoardEqualToDstBoard(this.copyOfBoard, this.dst)', !this.isNewBoardEqualToDstBoard(this.copyOfBoard, this.dst))
-      // console.log(this.copyOfBoard)
+      console.log('!isNewBoardEqualToDstBoard:', !this.isNewBoardEqualToDstBoard(Array.from(this.copyOfBoard), Array.from(this.dst)))
+      console.log('!isNewBoardEqualToDstBoard:', `&& ${TotalEmptyFieldsOfCopyBoard} === ${this.totalEmptyFieldsInDst}`)
+      console.log('!availableMoves.length:', !Object.values(availableMoves).filter(bool => bool).length)
+      
       if(
           TotalEmptyFieldsOfCopyBoard === this.emptyPinsInPreviousMoved 
           || (!this.isNewBoardEqualToDstBoard(Array.from(this.copyOfBoard), Array.from(this.dst)) && TotalEmptyFieldsOfCopyBoard === this.totalEmptyFieldsInDst) 
@@ -264,7 +267,14 @@ const MOVES = Object.freeze({
         // setTimeout(() => {
             // console.log('this.gameMoveStack:', this.gameMoveStack)
             // console.log('this.memoryMoves:', this.memoryMoves )
+            console.log(`gameMoveStack:`, this.gameMoveStack)
+            // console.log(`gameMoveStack:`, this.gameMoveStack.length)
           const lastMove = this.gameMoveStack.pop();
+          // console.log(`lastMove:`, lastMove)
+          // console.log(`gameMoveStack:`, this.gameMoveStack.length)
+          // if(lastMove) {
+            
+          // }
           this.countBoardRetries = lastMove.retryBoardNumber
           this.emptyPinsInPreviousMoved = lastMove.emptyPinsInPreviousMoved;
           // this.pushMoveToMemory(x, y, lastMoveType, this.countBoardRetries); // , emptyPinsInPreviousMoved
@@ -329,6 +339,7 @@ const MOVES = Object.freeze({
       if(
           this.isValidBounds(x, y, MOVES.LEFT) &&
           !this.isTherePin(x - PIN_MOVE_COUNT, y) &&
+          this.isTherePin(x - 1, y) &&
           !this.isMoveInExistsMemory(x, y, MOVES.LEFT, this.countBoardRetries)
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y][x - 1] == EMPTY_CAHR)
         ) {
@@ -341,13 +352,23 @@ const MOVES = Object.freeze({
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y + 1][x] == EMPTY_CAHR)
         ) {
           if([0, 1].includes(y) && !this.isTherePin(x + 2, y + PIN_MOVE_COUNT)) {
-            availableMoves[MOVES.BOTTOM] = true;
+            if(y == 1 && this.isTherePin(x + 2, y + 1)) {
+              availableMoves[MOVES.BOTTOM] = true;            
+            }
+            else if(y == 0 && this.isTherePin(x, y + 1)) {
+              availableMoves[MOVES.BOTTOM] = true;            
+            }
           } 
-          else if([3, 4].includes(y) && !this.isTherePin(x - 2, y + PIN_MOVE_COUNT)) {
-            availableMoves[MOVES.BOTTOM] = true;
+          else if([3, 4].includes(y) && !this.isTherePin(x - 2, y + PIN_MOVE_COUNT) ) {
+            if(y == 4 && this.isTherePin(x - 2, y + 1)) {
+              availableMoves[MOVES.BOTTOM] = true;
+            }
+            else if(y == 3 && this.isTherePin(x, y + 1)) {
+              availableMoves[MOVES.BOTTOM] = true;
+            }
           } 
-          else if(y == 2 && !this.isTherePin(x, y + PIN_MOVE_COUNT)){
-            availableMoves[MOVES.UP] = true;
+          else if(y == 2 && !this.isTherePin(x, y + PIN_MOVE_COUNT) && this.isTherePin(x, y + 1)){
+            availableMoves[MOVES.BOTTOM] = true;
           }
       }
       
@@ -356,18 +377,34 @@ const MOVES = Object.freeze({
         !this.isMoveInExistsMemory(x, y, MOVES.UP, this.countBoardRetries)
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y - 1][x] == EMPTY_CAHR)
         ) {
-          if(x == 3 && y == 3) {
-            console.log('move')
-            console.log(Array.from(this.copyOfBoard))
-          }
+          // if(y == 2 & x == 3  ) { // && !Object.keys(this.gameMoveStack).length
+          //   console.log('y == 2 and x == 3')
+          //   console.log('copyofboard:', this.copyOfBoard)
+          //   console.log('Is there pin', !this.isTherePin(x - 2, y - PIN_MOVE_COUNT))
+          //   console.log('row:', this.copyOfBoard[y])
+          //   console.log('char:', this.copyOfBoard[y][x])
+          //   // return;
+          // }
+          // if(x == 1 && y == 5) {
+          //   console.log('x == 1 && y == 5')
+          //   console.log(Array.from(this.copyOfBoard))
+          // }
           if([2, 3].includes(y) && !this.isTherePin(x - 2, y - PIN_MOVE_COUNT)) {
-            console.log('here',!this.isTherePin(x - 2, y - PIN_MOVE_COUNT))
-            availableMoves[MOVES.UP] = true;
+            if(y == 2 && this.isTherePin(x - 2, y - 1)) {
+              availableMoves[MOVES.UP] = true;
+            } else if(y == 3 && this.isTherePin(x, y - 1)) {
+              availableMoves[MOVES.UP] = true;
+            }
           }
-          else if([5, 6].includes(y) && !this.isTherePin(x + 2, y - PIN_MOVE_COUNT)) {
-            availableMoves[MOVES.UP] = true;
+          else if([5, 6].includes(y) && !this.isTherePin(x + 2, y - PIN_MOVE_COUNT) ) {
+            if(y == 5 && this.isTherePin(x + 2, y - 1)) {
+              availableMoves[MOVES.UP] = true;
+            }
+            else if(y == 6 && this.isTherePin(x, y - 1)) {
+              availableMoves[MOVES.UP] = true;
+            }
           } 
-          else if(y == 4 && !this.isTherePin(x, y - PIN_MOVE_COUNT)) {
+          else if(y == 4 && !this.isTherePin(x, y - PIN_MOVE_COUNT) && this.isTherePin(x, y - 1)) {
             availableMoves[MOVES.UP] = true;
           }
       }
@@ -375,6 +412,7 @@ const MOVES = Object.freeze({
       if(
         this.isValidBounds(x, y, MOVES.RIGHT) && 
           !this.isTherePin(x + PIN_MOVE_COUNT, y) &&
+          this.isTherePin(x + 1, y) &&
           !this.isMoveInExistsMemory(x, y, MOVES.RIGHT, this.countBoardRetries)
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y][x + 1] == EMPTY_CAHR)
         ) {         
@@ -458,15 +496,15 @@ const MOVES = Object.freeze({
   const game = new Game();
   try {
     game.init(
-      // [' OOO ', ' OOO ', 'O.O.OOO', 'OOO..OO', '..O.OOO', ' O.O ', ' OOO '],
-      [
-         ' OOO ',
-         ' OOO ', 
-        'OOOOOOO', 
-        'OOOOOOO', 
-        'OOOO..O', 
-         ' O.O ', 
-         ' OOO ']
+      [' OOO ', ' OOO ', 'O.O.OOO', 'OOO..OO', '..O.OOO', ' O.O ', ' OOO '],
+      // [
+      //    ' OOO ',
+      //    ' OOO ', 
+      //   'OOOOOOO', 
+      //   'OOOOOOO', 
+      //   'OOOO..O', 
+      //    ' O.O ', 
+      //    ' OOO ']
          // UP, LEFT  
       // [' OOO ', ' OOO ', 'OOOOOOO', 'OOO.OOO', 'OOOOOOO', ' OOO ', ' OOO '] 
     )
