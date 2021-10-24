@@ -331,11 +331,11 @@ const MOVES = Object.freeze({
           // !this.isTherePin(x, y + PIN_MOVE_COUNT) 
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y + 1][x] == EMPTY_CAHR)
         ) {
-          if([0, 1].includes(y) && this.isTherePin(x + 2, y + PIN_MOVE_COUNT)) {
+          if([0, 1].includes(y) && !this.isTherePin(x + 2, y + PIN_MOVE_COUNT)) {
             availableMoves[MOVES.BOTTOM] = true;
           }
 
-          if([3, 4].includes(y) && this.isTherePin(x - 2, y + PIN_MOVE_COUNT)) {
+          if([3, 4].includes(y) && !this.isTherePin(x - 2, y + PIN_MOVE_COUNT)) {
             availableMoves[MOVES.BOTTOM] = true;
           }
       }
@@ -344,11 +344,11 @@ const MOVES = Object.freeze({
         this.isValidBounds(x, y, MOVES.UP) 
         //   && (this.dst[y][x] == EMPTY_CAHR && this.dst[y - 1][x] == EMPTY_CAHR)
         ) {
-          if([2, 3].includes(y) && this.isTherePin(x - 2, y - PIN_MOVE_COUNT)) {
+          if([2, 3].includes(y) && !this.isTherePin(x - 2, y - PIN_MOVE_COUNT)) {
             availableMoves[MOVES.UP] = true;
           }
 
-          if([5, 6].includes(y) && this.isTherePin(x + 2, y - PIN_MOVE_COUNT)) {
+          if([5, 6].includes(y) && !this.isTherePin(x + 2, y - PIN_MOVE_COUNT)) {
             availableMoves[MOVES.UP] = true;
           }
       }
