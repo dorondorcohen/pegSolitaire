@@ -254,8 +254,8 @@ const MOVES = Object.freeze({
       // console.log('this.memoryMoves:', this.memoryMoves )
       // console.log('Object.values(availableMoves).filter(bool => bool):', Object.values(availableMoves).filter(bool => bool))
       // console.log('1:', `${TotalEmptyFieldsOfCopyBoard} === ${this.totalEmptyFieldsInDst}`)
-      console.log('!isNewBoardEqualToDstBoard:', !this.isNewBoardEqualToDstBoard(Array.from(this.copyOfBoard), Array.from(this.dst)))
-      console.log('!isNewBoardEqualToDstBoard:', `&& ${TotalEmptyFieldsOfCopyBoard} === ${this.totalEmptyFieldsInDst}`)
+      console.log('!isNewBoardEqualToDstBoard:', `${!this.isNewBoardEqualToDstBoard(Array.from(this.copyOfBoard), Array.from(this.dst))} && ${TotalEmptyFieldsOfCopyBoard} === ${this.totalEmptyFieldsInDst}`)
+
       console.log('!availableMoves.length:', !Object.values(availableMoves).filter(bool => bool).length)
       
       if(
